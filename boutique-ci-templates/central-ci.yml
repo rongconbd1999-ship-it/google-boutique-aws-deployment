@@ -1,0 +1,42 @@
+stages:
+  - sonarqube-check
+  - build_and_push_to_ECR
+
+# ==========================================
+# 1. Scan Job
+# ==========================================
+sonarqube_scan_job:
+  stage: sonarqube-check
+  tags:
+    - ec2
+  script:
+    - echo "Đang khởi động quét SonarQube cho service >> ${SERVICE_NAME} <<"
+    - docker run --rm -v "$(pwd):/usr/src" -e SONAR_HOST_URL="https://sonarcloud.io" -e SONAR_TOKEN=$SONAR_TOKEN sonarsource/sonar-scanner-cli -Dsonar.projectKey="boutique-${SERVICE_NAME}" -Dsonar.organization="rongconbd1999-ship-it"
+  allow_failure: true 
+
+# ==========================================
+# 2. Build and push image to ECR
+# ==========================================
+microservice_build_and_deploy_job:
+  stage: build_and_push_to_ECR
+  tags:
+    - ec2
+  before_script:
+    - aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URL}
+  script:
+    - echo "Đang xử lý đóng gói cho service >> ${SERVICE_NAME} <<"
+    
+    # Step A: Build & Push lên ECR 
+    - export VERSION_TAG="${CI_COMMIT_SHORT_SHA}"
+    - docker build -t ${REGISTRY_URL}/sap2506/${SERVICE_NAME}:${VERSION_TAG} .
+    - docker push ${REGISTRY_URL}/sap2506/${SERVICE_NAME}:${VERSION_TAG}
+    
+    # Step B: Clone GitOps Repo & Sửa cấu hình
+    - git config --global user.email "gitlab-runner@boutique.local"
+    - git config --global user.name "GitLab CI Bot"
+    - git clone http://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_NAMESPACE}/boutique-gitops-manifests.git
+    - cd boutique-gitops-manifests
+    - kustomize edit set image ${SERVICE_NAME}=${REGISTRY_URL}/sap2506/${SERVICE_NAME}:${VERSION_TAG}
+    - git add kustomization.yaml
+    - git commit -m "Auto-deploy Update ${SERVICE_NAME} to ${VERSION_TAG} [skip ci]" || echo "Khong co thay doi de commit"
+    - git push origin main

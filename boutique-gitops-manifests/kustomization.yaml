@@ -1,0 +1,54 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+##namespace: microservice
+#- shoppingassistantservice.yaml
+resources:
+- adservice.yaml
+- cartservice.yaml
+- checkoutservice.yaml
+- currencyservice.yaml
+- emailservice.yaml
+- frontend.yaml
+- loadgenerator.yaml
+- paymentservice.yaml
+- productcatalogservice.yaml
+- recommendationservice.yaml
+- shippingservice.yaml
+- ingress.yaml
+images:
+- name: adservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/adservice
+  newTag: 6600898a
+- name: cartservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/cartservice
+  newTag: a18091ac
+- name: checkoutservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/checkoutservice
+  newTag: 8225df73
+- name: currencyservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/currencyservice
+  newTag: c034d1e9
+- name: emailservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/emailservice
+  newTag: ddca38e5
+- name: frontend
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/frontend
+  newTag: f1440f86
+- name: loadgenerator
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/loadgenerator
+  newTag: 14be6db2
+- name: paymentservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/paymentservice
+  newTag: 07c8b798
+- name: productcatalogservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/productcatalogservice
+  newTag: 843513c7
+- name: recommendationservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/recommendationservice
+  newTag: 32aadd06
+- name: shippingservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/shippingservice
+  newTag: a74b368b
+- name: shoppingassistantservice
+  newName: 283236069347.dkr.ecr.ap-southeast-1.amazonaws.com/sap2506/shoppingassistantservice
+  newTag: v119
