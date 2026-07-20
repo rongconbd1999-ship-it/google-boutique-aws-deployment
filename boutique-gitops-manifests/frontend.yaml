@@ -127,8 +127,8 @@ metadata:
   name: frontend-external
   labels:
     app: frontend
-  #annotations:                                                             # <--- CHÈN THÊM DÒNG NÀY
-    #service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing" # <--- VÀ DÒNG NÀY ĐỂ ALB vào Pub-subnet
+  #annotations:                                                            
+    #service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing" # <--- Set ALB into Pub-subnet
 spec:
   #type: LoadBalancer
   type: ClusterIP
